@@ -55,17 +55,15 @@ namespace Web.Client.Controllers
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = UploadedFile(employee);
+                UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Get));
         }
-        private string UploadedFile(Employee employee)
+        private void UploadedFile(Employee employee)
         {
-            string uniqueFileName = null;
-
             if (employee.ProfileImage != null)
             {
                 string webRootPath = _webHostEnvironment.ContentRootPath;
@@ -74,12 +72,11 @@ namespace Web.Client.Controllers
                 {
                     Directory.CreateDirectory(newPath);
                 }
-                uniqueFileName = employee.Id + "_" + employee.ProfileImage.FileName;
+                var uniqueFileName = employee.Id + "_" + employee.ProfileImage.FileName;
                 string filePath = Path.Combine(newPath, uniqueFileName);
                 using var fileStream = new FileStream(filePath, FileMode.Create);
                 employee.ProfileImage.CopyTo(fileStream);
             }
-            return uniqueFileName;
         }
 
         [HttpGet]
@@ -112,13 +109,25 @@ namespace Web.Client.Controllers
             {
                 try
                 {
-                    UploadedFile(employee);
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    var employeeExists = await _context.Employees.FindAsync(id);
+                    if(employeeExists != null)
+                    {
+                        UploadedFile(employee);
+                        employeeExists.Name = employee.Name;
+                        employeeExists.Age = employee.Age;
+                        employeeExists.Position = employee.Position;
+                        _context.Update(employeeExists);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                        return NotFound();
+                    return NotFound();
                 }
                 return RedirectToAction("Get");
             }
@@ -129,16 +138,19 @@ namespace Web.Client.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
-            var employee = await _context.Employees.FindAsync(id.ToString());
-            if (employee == null)
-            {
-                return RedirectToAction(nameof(Get));
-            }
             try
             {
-                _context.Employees.Remove(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Get));
+                var employeeExists = await _context.Employees.FindAsync(id);
+                if (employeeExists != null)
+                {
+                    _context.Employees.Remove(employeeExists);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Get));
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             catch (DbUpdateException ex)
             {
