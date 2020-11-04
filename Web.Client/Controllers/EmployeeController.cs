@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,13 +17,12 @@ namespace Web.Client.Controllers
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        //private readonly ILogger<HomeController> _logger;
-
-        public EmployeeController(ApplicationDbContext context) //ILogger<HomeController> logger)
+        public EmployeeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            //_logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -41,11 +42,26 @@ namespace Web.Client.Controllers
         {
             if (ModelState.IsValid)
             {
+                string uniqueFileName = UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Employees));
+        }
+        private string UploadedFile(Employee employee)
+        {
+            string uniqueFileName = null;
+
+            if (employee.ProfileImage != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + employee.ProfileImage.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                employee.ProfileImage.CopyTo(fileStream);
+            }
+            return uniqueFileName;
         }
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
