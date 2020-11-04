@@ -140,7 +140,7 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
