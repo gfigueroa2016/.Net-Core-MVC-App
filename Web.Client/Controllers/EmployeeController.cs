@@ -69,14 +69,13 @@ namespace Web.Client.Controllers
             if (employee.ProfileImage != null)
             {
                 string webRootPath = _webHostEnvironment.ContentRootPath;
-                string newPath = Path.Combine(webRootPath, "images");
+                string newPath = Path.Combine(webRootPath, "wwwroot\\images");
                 if (!Directory.Exists(newPath))
                 {
                     Directory.CreateDirectory(newPath);
                 }
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + employee.ProfileImage.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                string filePath = Path.Combine(newPath, uniqueFileName);
                 using var fileStream = new FileStream(filePath, FileMode.Create);
                 employee.ProfileImage.CopyTo(fileStream);
             }
