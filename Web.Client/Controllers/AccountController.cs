@@ -187,7 +187,7 @@ namespace Web.Client.Controllers
         {
             await _signInManager.SignOutAsync();
 
-            return RedirectToAction(nameof(EmployeeController.Index), "Home");
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -348,7 +348,7 @@ namespace Web.Client.Controllers
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction(nameof(EmployeeController.Index), "Home");
+                return RedirectToAction("Get", "Employee");
         }
 
         [HttpGet]

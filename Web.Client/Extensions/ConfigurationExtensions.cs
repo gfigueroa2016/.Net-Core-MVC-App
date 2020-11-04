@@ -46,17 +46,17 @@ namespace Web.Client.Extensions
              .AddPasswordValidator<CustomPasswordValidator<User>>();
             return services;
         }
-        public static IServiceCollection AddExternalAuthentication(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddAuthentication().AddGoogle("google", opt =>
-            {
-                var googleAuth = configuration.GetSection("Authentication:Google");
-                opt.ClientId = googleAuth["ClientId"];
-                opt.ClientSecret = googleAuth["ClientSecret"];
-                opt.SignInScheme = IdentityConstants.ExternalScheme;
-            });
-            return services;
-        }
+        //public static IServiceCollection AddExternalAuthentication(this IServiceCollection services, IConfiguration configuration)
+        //{
+        //    services.AddAuthentication().AddGoogle("google", opt =>
+        //    {
+        //        var googleAuth = configuration.GetSection("Authentication:Google");
+        //        opt.ClientId = googleAuth["ClientId"];
+        //        opt.ClientSecret = googleAuth["ClientSecret"];
+        //        opt.SignInScheme = IdentityConstants.ExternalScheme;
+        //    });
+        //    return services;
+        //}
         public static IServiceCollection AddEmailConfirmation(this IServiceCollection services, IConfiguration configuration)
         {
             var emailConfig = configuration

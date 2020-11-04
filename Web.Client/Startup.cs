@@ -21,7 +21,7 @@ namespace Web.Client
         {
             services.AddApplicationDbContext(Configuration);
             services.AddIdentity();
-            services.AddExternalAuthentication(Configuration);
+            //services.AddExternalAuthentication(Configuration);
             services.AddEmailConfirmation(Configuration);
             services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();

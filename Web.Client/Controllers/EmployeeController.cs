@@ -33,9 +33,9 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Employees(string sortOrder, string searchString, int? pageNumber)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Get(string searchString, int? pageNumber)
         {
-            ViewData["CurrentSort"] = sortOrder;
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -53,7 +53,7 @@ namespace Web.Client.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEmployee(Employee employee)
+        public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace Web.Client.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Employees));
+            return RedirectToAction(nameof(Get));
         }
         private string UploadedFile(Employee employee)
         {
@@ -78,52 +78,71 @@ namespace Web.Client.Controllers
             }
             return uniqueFileName;
         }
-        [HttpPost, ActionName("Edit")]
+
+        [HttpGet]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditEmployee(string id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var employeeToUpdate = await _context.Employees.FirstOrDefaultAsync(s => s.Id.ToString() == id);
-            if (await TryUpdateModelAsync<Employee>(
-                employeeToUpdate,
-                "",
-                e => e.Name, e => e.Age, e => e.Position))
+
+            var movie = await _context.Employees.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return View(movie);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Position,ProfileImage")] Employee employee)
+        {
+            if (id != employee.Id.ToString())
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
             {
                 try
                 {
+                    string uniqueFileName = UploadedFile(employee);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Employees));
                 }
-                catch (DbUpdateException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    return RedirectToAction(nameof(Employees));
+                        return NotFound();
                 }
+                return RedirectToAction("Get");
             }
-            return View(employeeToUpdate);
+            return View(employee);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpGet]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteEmployee(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
             {
-                return RedirectToAction(nameof(Employees));
+                return RedirectToAction(nameof(Get));
             }
-
             try
             {
                 _context.Employees.Remove(employee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Employees));
+                return RedirectToAction(nameof(Get));
             }
             catch (DbUpdateException ex)
             {
-                return RedirectToAction(nameof(Employees));
+                return RedirectToAction(nameof(Get));
             }
         }
 
