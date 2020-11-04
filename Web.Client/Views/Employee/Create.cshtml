@@ -2,7 +2,7 @@
 
 <h1>Create Employee</h1>
 
-<form asp-controller="Employee" asp-action="CreateEmployee" method="post">
+<form asp-controller="Employee" asp-action="Create" method="post">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">@ViewData["Employee"]</h3>
@@ -15,7 +15,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Age"></label>
-                <input asp-for="Age" class="form-control" placeholder="Last Name" />
+                <input asp-for="Age" class="form-control" placeholder="Age" />
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -26,15 +26,15 @@
             <div class="form-group">
                 <label asp-for="ProfileImage" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="ProfileImage" class="custom-file-input" id="customFile">
+                    <input asp-for="ProfileImage" class="custom-file-input" id="ProfileImage">
                     <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
                 <span asp-validation-for="ProfileImage" class="text-danger"></span>
             </div>
         </div>
         <div class="panel-footer">
-            <input type="submit" class="btn btn-primary" value="CreateEmployee" />
-            <a asp-action="Employees">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="Create" />
+            <a asp-action="Get">Cancel</a>
         </div>
     </div>
 </form>

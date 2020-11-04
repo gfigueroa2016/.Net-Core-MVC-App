@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-controller="Employee" asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label asp-for="ProfileImage" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="ProfileImage" class="custom-file-input" id="customFile">
+                    <input asp-for="ProfileImage" class="custom-file-input" id="ProfileImage">
                     <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
                 <span asp-validation-for="ProfileImage" class="text-danger"></span>
@@ -44,5 +44,5 @@
 </div>
 
 <div>
-    <a asp-action="Employees">Back to List</a>
+    <a asp-action="Get">Back to List</a>
 </div>
