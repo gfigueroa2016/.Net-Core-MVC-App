@@ -53,14 +53,14 @@ namespace Web.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Age,Name,Position,ProfileImage")] Employee employee)
         {
             if (ModelState.IsValid)
             {
                 employee.ImagePath = UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Get));
             }
             return RedirectToAction(nameof(Get));
         }
@@ -102,7 +102,7 @@ namespace Web.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Position,ProfileImage")] Employee employee)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Age,Name,Position,ProfileImage")] Employee employee)
         {
             if (id != employee.Id)
             {
