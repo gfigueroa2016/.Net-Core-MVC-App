@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace Web.Client.Models
         public string Position { get; set; }
         [Required(ErrorMessage = "Please choose profile image")]
         [Display(Name = "Profile Picture")]
+        [NotMapped]
         public IFormFile ProfileImage { get; set; }
     }
 }
