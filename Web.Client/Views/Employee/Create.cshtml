@@ -2,7 +2,7 @@
 
 <h1>Create Employee</h1>
 
-<form asp-controller="Employee" asp-action="Create" method="post">
+<form asp-controller="Employee" asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">@ViewData["Employee"]</h3>
@@ -24,12 +24,11 @@
                 <span asp-validation-for="Position" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProfileImage" class="control-label"></label>
-                <div class="custom-file">
-                    <input asp-for="ProfileImage" class="custom-file-input" id="ProfileImage">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                <div>
+                    <label asp-for="ProfileImage"></label>
                 </div>
-                <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                <input asp-for="ProfileImage" type="file">
+                <span asp-validation-for="ProfileImage"></span>
             </div>
         </div>
         <div class="panel-footer">
