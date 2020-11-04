@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Web.Client.Data;
+using Web.Client.Extensions;
 using Web.Client.Models;
 
 namespace Web.Client.Controllers
@@ -30,11 +31,25 @@ namespace Web.Client.Controllers
             return View();
         }
 
+        [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Employees()
+        public async Task<IActionResult> Employees(string sortOrder, string searchString, int? pageNumber)
         {
-            return View(await _context.Employees.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            var employees = from e in _context.Employees
+                            select e;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(s => s.Name.Contains(searchString));
+            }
+            int pageSize = 10;
+            return View(await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -92,7 +107,7 @@ namespace Web.Client.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(string id)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
@@ -110,18 +125,6 @@ namespace Web.Client.Controllers
             {
                 return RedirectToAction(nameof(Employees));
             }
-        }
-        public async Task<IActionResult> GetEmployees(string searchString)
-        {
-            var employees = from e in _context.Employees
-                            select e;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                employees = employees.Where(s => s.Name.Contains(searchString));
-            }
-
-            return View(await employees.ToListAsync());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

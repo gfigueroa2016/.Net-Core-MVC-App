@@ -1,20 +1,6 @@
 ﻿@model Web.Client.Models.Employee
 
-@{
-    ViewData["Title"] = "Create Employee";
-}
-
-<h1>Employees</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<form asp-controller="Home" asp-action="GetEmployees">
-    <p>
-        Employee: <input type="text" name="SearchString" />
-        <input type="submit" value="Search" />
-    </p>
-</form>
+<h1>Create Employee</h1>
 
 <form asp-controller="Employee" asp-action="CreateEmployee" method="post">
     <div class="panel panel-primary">
