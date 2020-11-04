@@ -26,11 +26,6 @@ namespace Web.Client.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Get(string searchString, int? pageNumber)
@@ -47,6 +42,13 @@ namespace Web.Client.Controllers
             }
             int pageSize = 10;
             return View(await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Create()
+        {
+            return View();
         }
 
         [HttpPost]
