@@ -55,14 +55,14 @@ namespace Web.Client.Controllers
         {
             if (ModelState.IsValid)
             {
-                UploadedFile(employee);
+                employee.ImagePath = UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Get));
         }
-        private void UploadedFile(Employee employee)
+        private string UploadedFile(Employee employee)
         {
             if (employee.ProfileImage != null)
             {
@@ -76,7 +76,9 @@ namespace Web.Client.Controllers
                 string filePath = Path.Combine(newPath, uniqueFileName);
                 using var fileStream = new FileStream(filePath, FileMode.Create);
                 employee.ProfileImage.CopyTo(fileStream);
+                return uniqueFileName;
             }
+            return null;
         }
 
         [HttpGet]
@@ -112,7 +114,7 @@ namespace Web.Client.Controllers
                     var employeeExists = await _context.Employees.FindAsync(id);
                     if(employeeExists != null)
                     {
-                        UploadedFile(employee);
+                        employeeExists.ImagePath = UploadedFile(employee);
                         employeeExists.Name = employee.Name;
                         employeeExists.Age = employee.Age;
                         employeeExists.Position = employee.Position;

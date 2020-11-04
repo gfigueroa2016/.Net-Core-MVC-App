@@ -21,5 +21,6 @@ namespace Web.Client.Models
         [Display(Name = "Profile Picture")]
         [NotMapped]
         public IFormFile ProfileImage { get; set; }
+        public string ImagePath { get; set; }
     }
 }

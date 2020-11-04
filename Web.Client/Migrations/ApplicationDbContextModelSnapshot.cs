@@ -48,15 +48,15 @@ namespace Web.Client.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "994163ea-de2b-4012-8a0f-7d92dbf07b02",
-                            ConcurrencyStamp = "63735b27-1d5e-43be-95fd-13645b1337e0",
+                            Id = "b20eab7c-b7b3-45d4-aaa9-c00962306f52",
+                            ConcurrencyStamp = "39e1f1be-c40a-42ab-bfad-1d23bb51e4d9",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         },
                         new
                         {
-                            Id = "49c99c23-0db6-4182-893d-c6c7091e34e6",
-                            ConcurrencyStamp = "4ac7293e-6106-432a-89f7-fe7b4563a14d",
+                            Id = "32937de7-4df6-48e4-b2e0-393507f2e632",
+                            ConcurrencyStamp = "c2c14c24-f35e-4856-89cb-75c9a68f22e9",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -175,6 +175,9 @@ namespace Web.Client.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -190,21 +193,21 @@ namespace Web.Client.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5356364b-c5d8-4ec5-9547-3736f3e23174"),
+                            Id = new Guid("17894a9c-bdd5-478d-b4ed-709c51f753c3"),
                             Age = 35,
                             Name = "Gabriel Figueroa",
                             Position = "Software Engineer"
                         },
                         new
                         {
-                            Id = new Guid("2a470a04-a87a-4c94-83f6-08d75f1e5efb"),
+                            Id = new Guid("55ce5806-a487-40d5-946a-1598acdd1393"),
                             Age = 38,
                             Name = "Becky Whisler",
                             Position = "Human Resoures Technician"
                         },
                         new
                         {
-                            Id = new Guid("3ff2b32b-b244-4ed9-8d1e-73a7eb0e50c4"),
+                            Id = new Guid("28ab4e28-5f69-4c4e-9ce7-cc8ee80a690b"),
                             Age = 28,
                             Name = "Valerie Irene",
                             Position = "Software Testing Engineer"

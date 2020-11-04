@@ -55,7 +55,8 @@ namespace Web.Client.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Age = table.Column<int>(nullable: false),
-                    Position = table.Column<string>(nullable: false)
+                    Position = table.Column<string>(nullable: false),
+                    ImagePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -173,18 +174,18 @@ namespace Web.Client.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "994163ea-de2b-4012-8a0f-7d92dbf07b02", "63735b27-1d5e-43be-95fd-13645b1337e0", "Visitor", "VISITOR" },
-                    { "49c99c23-0db6-4182-893d-c6c7091e34e6", "4ac7293e-6106-432a-89f7-fe7b4563a14d", "Administrator", "ADMINISTRATOR" }
+                    { "b20eab7c-b7b3-45d4-aaa9-c00962306f52", "39e1f1be-c40a-42ab-bfad-1d23bb51e4d9", "Visitor", "VISITOR" },
+                    { "32937de7-4df6-48e4-b2e0-393507f2e632", "c2c14c24-f35e-4856-89cb-75c9a68f22e9", "Administrator", "ADMINISTRATOR" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "Age", "Name", "Position" },
+                columns: new[] { "Id", "Age", "ImagePath", "Name", "Position" },
                 values: new object[,]
                 {
-                    { new Guid("5356364b-c5d8-4ec5-9547-3736f3e23174"), 35, "Gabriel Figueroa", "Software Engineer" },
-                    { new Guid("2a470a04-a87a-4c94-83f6-08d75f1e5efb"), 38, "Becky Whisler", "Human Resoures Technician" },
-                    { new Guid("3ff2b32b-b244-4ed9-8d1e-73a7eb0e50c4"), 28, "Valerie Irene", "Software Testing Engineer" }
+                    { new Guid("17894a9c-bdd5-478d-b4ed-709c51f753c3"), 35, null, "Gabriel Figueroa", "Software Engineer" },
+                    { new Guid("55ce5806-a487-40d5-946a-1598acdd1393"), 38, null, "Becky Whisler", "Human Resoures Technician" },
+                    { new Guid("28ab4e28-5f69-4c4e-9ce7-cc8ee80a690b"), 28, null, "Valerie Irene", "Software Testing Engineer" }
                 });
 
             migrationBuilder.CreateIndex(
