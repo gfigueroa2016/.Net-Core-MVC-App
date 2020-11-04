@@ -74,7 +74,7 @@ namespace Web.Client.Controllers
                 {
                     Directory.CreateDirectory(newPath);
                 }
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + employee.ProfileImage.FileName;
+                uniqueFileName = employee.Id + "_" + employee.ProfileImage.FileName;
                 string filePath = Path.Combine(newPath, uniqueFileName);
                 using var fileStream = new FileStream(filePath, FileMode.Create);
                 employee.ProfileImage.CopyTo(fileStream);
@@ -91,12 +91,12 @@ namespace Web.Client.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Employees.FindAsync(id);
-            if (movie == null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            return View(movie);
+            return View(employee);
         }
 
         [HttpPost]
@@ -112,7 +112,7 @@ namespace Web.Client.Controllers
             {
                 try
                 {
-                    string uniqueFileName = UploadedFile(employee);
+                    UploadedFile(employee);
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
