@@ -33,7 +33,6 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Get(string searchString, int? pageNumber)
         {
             if (searchString != null)
