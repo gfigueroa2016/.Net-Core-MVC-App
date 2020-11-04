@@ -1,4 +1,4 @@
-# Nomad Ecommerce Test
+# MVC .Net Core App with Microsoft's Identity
 
 ## Email Service Use
 
