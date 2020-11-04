@@ -51,7 +51,6 @@ namespace Web.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
@@ -80,8 +79,7 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
@@ -98,10 +96,9 @@ namespace Web.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Position,ProfileImage")] Employee employee)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Position,ProfileImage")] Employee employee)
         {
-            if (id != employee.Id.ToString())
+            if (id != employee.Id)
             {
                 return NotFound();
             }
@@ -125,10 +122,9 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id.ToString());
             if (employee == null)
             {
                 return RedirectToAction(nameof(Get));
