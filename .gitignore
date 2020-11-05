@@ -3,3 +3,9 @@
 ################################################################################
 
 /Web.Client/obj
+/Web.Client/bin/Debug/netcoreapp3.1
+/Email.Service/obj
+/.vs/Nomad
+/Email.Service/bin/Debug/netcoreapp3.1
+/Web.Client/wwwroot/images
+/appsettings.json
