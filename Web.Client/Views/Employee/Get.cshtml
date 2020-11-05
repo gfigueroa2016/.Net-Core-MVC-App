@@ -46,14 +46,13 @@
                     url: '@(Url.Action("GetAsync", "Employee"))?searchString= ' + search + '&pageNumber=' + pageNumber ?? 1,
                     contentType: 'application/html; charset=utf-8',
                     type: 'GET',
-                    dataType: 'html'
-                })
-                    .success(function (result) {
-                        $('#dvProductDetails').html(result);
-                    })
-                    .error(function (xhr, status) {
+                    dataType: 'html',
+                    success: function (result) {
+                        $('#employees').html(result);
+                    },
+                    error: function (xhr, status) {
                         alert(status);
-                    })
+                    }
                 });
             });
         });
