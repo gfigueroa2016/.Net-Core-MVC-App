@@ -28,17 +28,18 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAsync(string searchString, int? pageNumber)
+        public async Task<IActionResult> GetAsync(string search, int? page)
         {
+            
             var employees = from e in _context.Employees
                             select e;
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(search))
             {
-                employees = employees.Where(s => s.Name.Contains(searchString));
+                employees = employees.Where(s => s.Name.Contains(search));
             }
             if (HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("_GetEmployees", await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, 10));
+                return PartialView("_GetEmployees", await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), page ?? 1, 10));
             }  
             else
             {

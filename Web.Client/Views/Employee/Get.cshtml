@@ -4,7 +4,7 @@
 
 <form>
     <p>
-        Employee: <input type="text" name="SearchString" id="searchField" />
+        Employee: <input type="text" name="search" id="search" />
     </p>
 </form>
 <br>
@@ -20,18 +20,12 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Employees"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
+<a id="previous-button" value="@(Model.PageIndex - 1)"
+   class="btn btn-default carousel-item-prev">
     Previous
 </a>
-<a asp-action="Employees"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
+<a id="next-button" value="@(Model.PageIndex + 1)"
+   class="btn btn-default carousel-item-next">
     Next
 </a>
 
@@ -39,16 +33,55 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#searchField").keyup(function () {
-                var search = $("#searchField").val();
-                var pageNumber = $("#pageNumber").val();
+            var search = $("#search");
+            var previous = $("#previous-button");
+            var next = $("#next-button");
+            var searchString = search.val();
+            search.keyup(function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+                var employees = $('#employees');
                 $.ajax({
-                    url: '@(Url.Action("GetAsync", "Employee"))?searchString= ' + search + '&pageNumber=' + pageNumber ?? 1,
-                    contentType: 'application/html; charset=utf-8',
+                    cache: false,
                     type: 'GET',
-                    dataType: 'html',
-                    success: function (result) {
-                        $('#employees').html(result);
+                    url: '@(Url.Action("GetAsync", "Employee"))',
+                    data: {'search': searchString, 'page': 1},
+                    success: function (data) {
+                        employees.html('');
+                        employees.html(data);
+                    },
+                    error: function (xhr, status) {
+                        alert(status);
+                    }
+                });
+            });
+            previous.on('click', function () {
+                $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    url: '@(Url.Action("GetAsync", "Employee"))',
+                    data: {'search': searchString, 'page': previous.val()},
+                    success: function (data) {
+                        employees.html('');
+                        employees.html(data);
+                    },
+                    error: function (xhr, status) {
+                        alert(status);
+                    }
+                });
+            });
+            next.on('click', function () {
+                $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    url: '@(Url.Action("GetAsync", "Employee"))',
+                    data: {'search': searchString, 'page': next.val()},
+                    success: function (data) {
+                        employees.html('');
+                        employees.html(data);
                     },
                     error: function (xhr, status) {
                         alert(status);
