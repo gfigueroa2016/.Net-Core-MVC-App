@@ -2,10 +2,9 @@
 
 <h1>Employees</h1>
 
-<form asp-controller="Employee" asp-action="Get" method="get">
+<form>
     <p>
-        Employee: <input type="text" name="SearchString" />
-        <input type="submit" value="Search" />
+        Employee: <input type="text" name="SearchString" id="searchField" />
     </p>
 </form>
 <br>
@@ -13,51 +12,8 @@
     <a asp-action="Create">Create</a>
 </div>
 <br>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Age)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Position)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    <img src="~/images/@item.ImagePath"
-                         class="rounded-circle"
-                         height="40" width="40"
-                         asp-append-version="true" />
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Age)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Position)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<partial name="_GetEmployees" />
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
@@ -78,3 +34,28 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#searchField").keyup(function () {
+                var search = $("#searchField").val();
+                var pageNumber = $("#pageNumber").val();
+                $.ajax({
+                    url: '@(Url.Action("GetAsync", "Employee"))?searchString= ' + search + '&pageNumber=' + pageNumber ?? 1,
+                    contentType: 'application/html; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'html'
+                })
+                    .success(function (result) {
+                        $('#dvProductDetails').html(result);
+                    })
+                    .error(function (xhr, status) {
+                        alert(status);
+                    })
+                });
+            });
+        });
+    </script>
+}

@@ -28,20 +28,22 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Get(string searchString, int? pageNumber)
+        public async Task<IActionResult> GetAsync(string searchString, int? pageNumber)
         {
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
             var employees = from e in _context.Employees
                             select e;
             if (!string.IsNullOrEmpty(searchString))
             {
                 employees = employees.Where(s => s.Name.Contains(searchString));
             }
-            int pageSize = 10;
-            return View(await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, pageSize));
+            if (HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_GetEmployees", await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), pageNumber ?? 1, 10));
+            }  
+            else
+            {
+                return View(await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), 1, 10));
+            }
         }
 
         [HttpGet]
@@ -53,16 +55,16 @@ namespace Web.Client.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Age,Name,Position,ProfileImage")] Employee employee)
+        public async Task<IActionResult> CreateAsync([Bind("Id,Age,Name,Position,ProfileImage")] Employee employee)
         {
             if (ModelState.IsValid)
             {
                 employee.ImagePath = UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Get));
+                return RedirectToAction(nameof(GetAsync));
             }
-            return RedirectToAction(nameof(Get));
+            return RedirectToAction(nameof(GetAsync));
         }
         private string UploadedFile(Employee employee)
         {
@@ -127,7 +129,6 @@ namespace Web.Client.Controllers
                     {
                         return NotFound();
                     }
-                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -149,7 +150,7 @@ namespace Web.Client.Controllers
                 {
                     _context.Employees.Remove(employeeExists);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Get));
+                    return RedirectToAction(nameof(GetAsync));
                 }
                 else
                 {
@@ -158,7 +159,7 @@ namespace Web.Client.Controllers
             }
             catch (DbUpdateException ex)
             {
-                return RedirectToAction(nameof(Get));
+                return RedirectToAction(nameof(GetAsync));
             }
         }
 
