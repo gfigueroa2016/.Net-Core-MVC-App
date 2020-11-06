@@ -1,25 +1,26 @@
 ﻿@model Web.Client.Models.SearchResult
 
-<table id="employees">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Age)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employees[0].Position)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Employees)
-        {
+
+@foreach (var item in Model.Employees)
+{
+    <table id="employees">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Employees[0].Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Employees[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Employees[0].Age)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Employees[0].Position)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
@@ -42,6 +43,6 @@
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}
