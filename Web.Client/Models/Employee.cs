@@ -22,5 +22,7 @@ namespace Web.Client.Models
         [NotMapped]
         public IFormFile ProfileImage { get; set; }
         public string ImagePath { get; set; }
+        [NotMapped]
+        public string SearchQuery { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,10 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Web.Client.Data;
 using Web.Client.Extensions;
 using Web.Client.Models;
+using PagedList.Core;
 
 namespace Web.Client.Controllers
 {
@@ -28,23 +27,22 @@ namespace Web.Client.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAsync(string search, int? page)
+        public IActionResult Get(string query, int page = 1)
         {
-            
+            int pageSize = 10;
+
             var employees = from e in _context.Employees
                             select e;
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(query))
             {
-                employees = employees.Where(s => s.Name.Contains(search));
+                employees = employees.Where(s => s.Name.Contains(query));
             }
-            if (HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            var searchResult = new SearchResult
             {
-                return PartialView("_GetEmployees", await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), page ?? 1, 10));
-            }  
-            else
-            {
-                return View(await PaginatedList<Employee>.CreateAsync(employees.AsNoTracking(), 1, 10));
-            }
+                SearchQuery = query,
+                Employees = employees.AsNoTracking().ToPagedList(page, pageSize)
+            };
+            return HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest" ? (ActionResult)PartialView("_GetEmployees", searchResult) : View(searchResult);
         }
 
         [HttpGet]
@@ -63,9 +61,9 @@ namespace Web.Client.Controllers
                 employee.ImagePath = UploadedFile(employee);
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(GetAsync));
+                return RedirectToAction(nameof(Get));
             }
-            return RedirectToAction(nameof(GetAsync));
+            return RedirectToAction(nameof(Get));
         }
         private string UploadedFile(Employee employee)
         {
@@ -151,7 +149,7 @@ namespace Web.Client.Controllers
                 {
                     _context.Employees.Remove(employeeExists);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(GetAsync));
+                    return RedirectToAction(nameof(Get));
                 }
                 else
                 {
@@ -160,7 +158,7 @@ namespace Web.Client.Controllers
             }
             catch (DbUpdateException ex)
             {
-                return RedirectToAction(nameof(GetAsync));
+                return RedirectToAction(nameof(Get));
             }
         }
 
